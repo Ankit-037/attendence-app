@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/app_user.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../theme/app_colors.dart';
 import 'role_selection_page.dart';
 import 'teacher_subject_page.dart';
 
@@ -76,7 +77,6 @@ class TeacherDashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Teacher Dashboard'),
-        backgroundColor: Colors.green,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -94,7 +94,6 @@ class TeacherDashboard extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.green,
         icon: const Icon(Icons.add),
         label: const Text('Add Course'),
         onPressed: () => _showAddSubjectDialog(context),
@@ -104,15 +103,18 @@ class TeacherDashboard extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
-            color: Colors.green.shade50,
+            color: AppColors.authBackgroundStart,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Welcome, ${user.name} sir',
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 4),
-                const Text('Tap a course to start an attendance session'),
+                const Text('Tap a course to start an attendance session',
+                    style: TextStyle(color: AppColors.textSecondary)),
               ],
             ),
           ),
@@ -141,14 +143,15 @@ class TeacherDashboard extends StatelessWidget {
                     return Card(
                       child: ListTile(
                         leading: const CircleAvatar(
-                            backgroundColor: Colors.green,
+                            backgroundColor: AppColors.primary,
                             child: Icon(Icons.book, color: Colors.white)),
                         title: Text(name),
                         subtitle: StreamBuilder<List<Map<String, dynamic>>>(
                           stream: _firestoreService.presentTodayStream(doc.id),
                           builder: (context, presentSnap) {
                             final count = presentSnap.data?.length ?? 0;
-                            return Text('Present today: $count');
+                            return Text('Present today: $count',
+                                style: const TextStyle(color: AppColors.textSecondary));
                           },
                         ),
                         trailing: Row(
@@ -156,8 +159,9 @@ class TeacherDashboard extends StatelessWidget {
                           children: [
                             PopupMenuButton<String>(
                               onSelected: (value) {
-                                if (value == 'delete')
+                                if (value == 'delete') {
                                   _confirmDelete(context, doc.id, name);
+                                }
                               },
                               itemBuilder: (context) => [
                                 const PopupMenuItem(
@@ -165,7 +169,7 @@ class TeacherDashboard extends StatelessWidget {
                                     child: Text('Delete Course')),
                               ],
                             ),
-                            const Icon(Icons.chevron_right),
+                            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
                           ],
                         ),
                         onTap: () {
