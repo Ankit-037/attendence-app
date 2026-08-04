@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/app_user.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../theme/app_colors.dart';
 import 'role_selection_page.dart';
 import 'student_subject_page.dart';
 
@@ -47,8 +48,7 @@ class StudentDashboard extends StatelessWidget {
                     if (context.mounted) Navigator.pop(context);
                   } else {
                     setState(() {
-                      errorText = result['message'] as String? ??
-                          'Something went wrong.';
+                      errorText = result['message'] as String? ?? 'Something went wrong.';
                     });
                   }
                 },
@@ -61,8 +61,7 @@ class StudentDashboard extends StatelessWidget {
     );
   }
 
-  void _confirmLeave(
-      BuildContext context, String subjectId, String subjectName) {
+  void _confirmLeave(BuildContext context, String subjectId, String subjectName) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -93,7 +92,6 @@ class StudentDashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Student Dashboard'),
-        backgroundColor: Colors.blue,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -111,7 +109,6 @@ class StudentDashboard extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.blue,
         icon: const Icon(Icons.add),
         label: const Text('Enroll in Course'),
         onPressed: () => _showEnrollDialog(context),
@@ -121,16 +118,18 @@ class StudentDashboard extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
-            color: Colors.blue.shade50,
+            color: AppColors.authBackgroundStart,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Welcome, ${user.name}',
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 4),
-                const Text(
-                    'Tap a course to check in when your teacher starts a session'),
+                const Text('Tap a course to check in when your teacher starts a session',
+                    style: TextStyle(color: AppColors.textSecondary)),
               ],
             ),
           ),
@@ -152,7 +151,7 @@ class StudentDashboard extends StatelessWidget {
                       child: Text(
                         'You are not enrolled in any course yet.\nTap "Enroll in Course" and enter the code your teacher gave you.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ),
                   );
@@ -167,14 +166,12 @@ class StudentDashboard extends StatelessWidget {
                     final name = data['name'] ?? '';
                     final teacherName = data['teacherName'] ?? '';
 
-                    return StreamBuilder<
-                        DocumentSnapshot<Map<String, dynamic>>>(
+                    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                       stream: _firestoreService.subjectStream(subjectId),
                       builder: (context, subjectSnap) {
                         final subjectData = subjectSnap.data?.data();
                         final activeCode = subjectData?['activeCode'];
-                        final codeExpiresAt =
-                            subjectData?['codeExpiresAt'] as Timestamp?;
+                        final codeExpiresAt = subjectData?['codeExpiresAt'] as Timestamp?;
                         final isLive = activeCode != null &&
                             codeExpiresAt != null &&
                             DateTime.now().isBefore(codeExpiresAt.toDate());
@@ -182,30 +179,24 @@ class StudentDashboard extends StatelessWidget {
                         return Card(
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundColor:
-                                  isLive ? Colors.orange : Colors.blue,
-                              child:
-                                  const Icon(Icons.book, color: Colors.white),
+                              backgroundColor: isLive ? Colors.orange : AppColors.primary,
+                              child: const Icon(Icons.book, color: Colors.white),
                             ),
                             title: Text(name),
-                            subtitle: Text(isLive
-                                ? 'Attendance code is live now!'
-                                : 'Taught by $teacherName'),
+                            subtitle: Text(
+                                isLive ? 'Attendance code is live now!' : 'Taught by $teacherName',
+                                style: const TextStyle(color: AppColors.textSecondary)),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (isLive)
-                                  const Icon(Icons.fiber_manual_record,
-                                      color: Colors.red, size: 14),
+                                  const Icon(Icons.fiber_manual_record, color: Colors.red, size: 14),
                                 PopupMenuButton<String>(
                                   onSelected: (value) {
-                                    if (value == 'leave')
-                                      _confirmLeave(context, subjectId, name);
+                                    if (value == 'leave') _confirmLeave(context, subjectId, name);
                                   },
                                   itemBuilder: (context) => [
-                                    const PopupMenuItem(
-                                        value: 'leave',
-                                        child: Text('Leave Course')),
+                                    const PopupMenuItem(value: 'leave', child: Text('Leave Course')),
                                   ],
                                 ),
                               ],
