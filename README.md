@@ -22,51 +22,13 @@ A mobile attendance system built with Flutter and Firebase. Teachers create cour
 
 ## Download and Install
 
-1. Go to the [Releases](../../releases) page of this repository (or the link shared with you) and download the latest `.apk` file.
+1. Go to the Releases page of this repository (or the link shared with you) and download the latest `.apk` file.
 2. On your Android phone, open the downloaded file. If prompted, allow installation from this source under **Settings → Security** (the exact wording varies by phone).
 3. Tap **Install** and open the app once it finishes.
 4. Choose **Login** or **Sign Up**, then pick **Student** or **Teacher**.
 
 No Apple/iOS build is provided at this time — the app currently targets Android.
 
-## Setup (for developers)
-
-### Prerequisites
-
-- [Flutter SDK](https://flutter.dev) installed
-- A [Firebase](https://console.firebase.google.com) project with:
-  - **Authentication** enabled with the **Email/Password** sign-in provider
-  - **Cloud Firestore** database created
-
-### Steps
-
-1. Clone this repository:
-   ```
-   git clone https://github.com/Ankit-037/attendence-app.git
-   cd attendence-app
-   ```
-
-2. Install dependencies:
-   ```
-   flutter pub get
-   ```
-
-3. Connect the app to your own Firebase project. Install the FlutterFire CLI if you don't already have it:
-   ```
-   dart pub global activate flutterfire_cli
-   ```
-   Then run the following from the project root and follow the prompts to select your Firebase project and target platforms:
-   ```
-   flutterfire configure
-   ```
-   This generates a working `lib/firebase_options.dart` file for your project.
-
-4. In the Firebase Console, open **Firestore Database → Rules** and publish the rules found in `firestore.rules` in this repository.
-
-5. Run the app:
-   ```
-   flutter run
-   ```
 
 ## How to Use
 
